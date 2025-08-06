@@ -1,4 +1,5 @@
 import {Link, useParams} from "react-router-dom";
+import "./css/detail.css"
 
 let PostDetail = () => {
     const {id} = useParams();
@@ -18,7 +19,7 @@ let PostDetail = () => {
             <h1 className={"post-detail-title"}>{post.title}</h1>
             <p className={"post-detail-content"}>{post.content}</p>
             <div className={"button-group"}>
-                <Link to={`/post/edit/${id}`} className={"edit=button"}>
+                <Link to={`/post/edit/${id}`} className={"edit-button"}>
                     수정하기
                 </Link>
                 <button onClick={handleDelete} className={"delete-button"}>
