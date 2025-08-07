@@ -1,34 +1,37 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import "./css/list.css";
+import axios from "axios";
 
 let Home = () => {
 
-    const allPosts = Array.from({length: 25}, (_, index) => ({
-        id: index + 1,
-        title: `${index + 1} 번째 게시글`,
-        content: `${index + 1} 번째 게시글 내용입니다.`
-    }));
-
-    // 페이지당 보여줄 게시글 수 설정
+    const [posts, setPosts] = useState([]); // 받을 포스트는 배열이기 때문에 "[]"로 받음
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 10;
-    // 현재 페이지 상태 관리
-    const [currentPage, setCurrentPage] = useState(1); // 초기값 1로 설정
 
-    // 현재 페이지에 해당하는 게시글 리스트 계산
-    //ex) currentPage = 2일 경우
-    // indexOfLastPost = 2 * 10 = 20
-    // indexOfFirstPage = 20 - 10 = 10
-    // currentPosts = allPosts.slice(10, 20) ==> 11~20번째 게시글
-    const indexOfLastPost = currentPage * postsPerPage;
-    const indexOfFirstPage = indexOfLastPost - postsPerPage;
-    const currentPosts = allPosts.slice(indexOfFirstPage, indexOfLastPost);
+    const getPostList = () => {
+        axios.get(`${process.env.REACT_APP_API_URL}/posts`, {
+            params: {
+                page: currentPage - 1,
+                size: postsPerPage
+            }
+        }).then(res => {
+            console.log(res.data.content);
+            setPosts(res.data.content);
+            setTotalPages(res.data.totalPages);
+        }).catch(err => {
+            console.err("게시글 가져오기 실패");
+        });
+    };
 
-    // 전체 페이지 번호 배열 계산
-    // 25 / 10 = 2.5 → Math.ceil로 올림 처리 ==> 3 페이지
-    // [1, 2, 3]으로 페이지 번호를 만들어서 버튼으로 보여줌
-    const totalPages = Math.ceil(allPosts.length / postsPerPage);
+    useEffect(() => { // currentPage가 변경하면 getPostList() 실행
+        getPostList();
+    }, [currentPage]);
+
+    // 페이지 번호 리스트
     const pageNumbers = Array.from({length: totalPages}, (_, index) => index + 1);
+
 
     // 페이지 변경 이벤트 핸들러
     const handlePageChange = (pageNumber) => {
@@ -40,7 +43,7 @@ let Home = () => {
             <h1 className={"home-title"}>게시글 목록</h1>
             <div className={"posts-list"}>
                 {
-                    currentPosts.map(post => (
+                    posts.map(post => (
                         <div key={post.id} className={"post-card"}>
                             <h2 className={"post-title"}>
                                 <Link to={`/post/${post.id}`}>{post.title}</Link>
