@@ -24,6 +24,9 @@ let PostEdit = () => {
         });
     }, [id]); // id값이 바뀌면 실행이 되게끔
 
+    // ...post를 이용해 기존 post 객체를 변경된 필드만 덮어씀
+    // [name]: value → name 속성과 동일한 키를 가진 값을 업데이트
+    // 즉, post.title에 새 value가 들어감.
     const handleOnChange = (e) => {
         const {name, value} = e.target;
         setPost({
