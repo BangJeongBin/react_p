@@ -2,6 +2,8 @@
 
 Inflearn "Spring Boot와 React로 배우는 초간단 REST API 게시판 만들기" 강의 Repository 입니다.
 
+모듈 저장소: https://github.com/BangJeongBin/prac
+
 <br>
 
 ---
